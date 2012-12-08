@@ -37,7 +37,7 @@ class IRCActivity(activity.Activity):
         logging.debug('Starting the IRC Activity')
         self.set_title(_('IRC Activity'))
 
-        self.add_events(Gdk.VISIBILITY_NOTIFY_MASK)
+        self.add_events(Gdk.EventMask.VISIBILITY_NOTIFY_MASK)
         self.connect('visibility-notify-event',
                      self.__visibility_notify_event_cb)
 

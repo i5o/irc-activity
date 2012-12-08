@@ -163,7 +163,7 @@ class SimpleWindow(Window):
         self.pack_end(self.input, expand=False)
         
         topbox = Gtk.ScrolledWindow()
-        topbox.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         topbox.add(self.output)
 
         self.pack_end(topbox)

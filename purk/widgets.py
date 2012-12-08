@@ -1,6 +1,6 @@
 import codecs
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import Pango
@@ -25,10 +25,10 @@ ACTIVITY_MARKUP = {
 # This holds all tags for all windows ever
 tag_table = Gtk.TextTagTable()
 
-link_tag = Gtk.TextTag('link')
-link_tag.set_property('underline', pango.UNDERLINE_SINGLE)
+link_tag = Gtk.TextTag.new('link')
+link_tag.set_property('underline', Pango.Underline.SINGLE)
 
-indent_tag = Gtk.TextTag('indent')
+indent_tag = Gtk.TextTag.new('indent')
 indent_tag.set_property('indent', -20)
 
 tag_table.add(link_tag)
@@ -53,7 +53,7 @@ def set_style(widget_name, style):
             dummy.modify_base(Gtk.StateType.NORMAL, Gdk.color.parse(value))
 
         def apply_style_font(value):
-            dummy.modify_font(pango.FontDescription(value))
+            dummy.modify_font(Pango.FontDescription(value))
     
         style_functions = (
             ('fg', apply_style_fg),
@@ -339,14 +339,14 @@ class TextInput(Gtk.Entry):
         
         self.connect('activate', TextInput.entered_text, False)
 
-gobject.type_register(TextInput)
+GObject.type_register(TextInput)
 
-def prop_to_gtk(textview, (prop, val)):
+def prop_to_Gtk(textview, (prop, val)):
     if val == parse_mirc.BOLD:
-        val = pango.WEIGHT_BOLD
+        val = Pango.WEIGHT_BOLD
 
     elif val == parse_mirc.UNDERLINE:
-        val = pango.UNDERLINE_SINGLE
+        val = Pango.Underline.SINGLE
         
     return {prop: val}
         
@@ -466,7 +466,7 @@ class TextOutput(Gtk.TextView):
             tag_name = str(tag['data'])
    
             if not tag_table.lookup(tag_name):
-                buffer.create_tag(tag_name, **prop_to_gtk(self, tag['data']))
+                buffer.create_tag(tag_name, **prop_to_Gtk(self, tag['data']))
 
             buffer.apply_tag_by_name(
                 tag_name, 
@@ -573,26 +573,26 @@ class TextOutput(Gtk.TextView):
                 self._scrolling = False
             
             if not self._scrolling:
-                self._scrolling = gobject.idle_add(do_scroll)
+                self._scrolling = GObject.idle_add(do_scroll)
     
     def check_autoscroll(self, *args):
         def set_to_scroll():
             self.autoscroll = self.scroller.value + self.scroller.page_size >= self.scroller.upper
             
-        gobject.idle_add(set_to_scroll)
+        GObject.idle_add(set_to_scroll)
 
     def __init__(self, core, window, buffer=None):
         if not buffer:
-            buffer = Gtk.TextBuffer(tag_table)
+            buffer = Gtk.TextBuffer.new(tag_table)
         
-        Gtk.TextView.__init__(self, buffer)
+        Gtk.TextView.__init__(buffer)
         self.core = core
         self.events = core.events
         self.win = window
         
         self.set_size_request(0, -1)
         
-        self.set_wrap_mode(Gtk.WRAP_WORD_CHAR)
+        self.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
         self.set_editable(False)
         self.set_cursor_visible(False)
 
@@ -604,12 +604,12 @@ class TextOutput(Gtk.TextView):
         self.add_events(Gdk.POINTER_MOTION_HINT_MASK)
         self.add_events(Gdk.LEAVE_NOTIFY_MASK)
 
-        self.connect('populate-popup', TextOutput.popup)
-        self.connect('motion-notify-event', TextOutput.hover)
-        self.connect('button-press-event', TextOutput.mousedown)
-        self.connect('button-release-event', TextOutput.mouseup)
+        self.connect('populate-popup', self.popup)
+        self.connect('motion-notify-event', self.hover)
+        self.connect('button-press-event', self.mousedown)
+        self.connect('button-release-event', self.mouseup)
         self.connect_after('button-release-event', lambda *a: True)
-        self.connect('leave-notify-event', TextOutput.clear_hover)
+        self.connect('leave-notify-event', self.clear_hover)
           
         self.hover_coords = 0, 0
 
@@ -627,7 +627,7 @@ class TextOutput(Gtk.TextView):
                 vadj.connect("value-changed", set_scroll)
 
         self.connect("set-scroll-adjustments", setup_scroll)
-        self.connect("size-allocate", TextOutput.scroll)
+        self.connect("size-allocate", self.scroll)
 
         def set_cursor(widget):
             self.get_window(Gtk.TEXT_WINDOW_TEXT).set_cursor(None)      
@@ -680,7 +680,7 @@ class WindowLabel(Gtk.EventBox):
         self.update()
         self.show_all()
         
-class FindBox(gtk.HBox):
+class FindBox(Gtk.HBox):
     def remove(self, *args):
         self.parent.remove(self)
         self.win.focus()
@@ -731,8 +731,8 @@ class FindBox(gtk.HBox):
         
         self.win = window
 
-        self.up = Gtk.Button(stock='gtk-go-up')
-        self.down = Gtk.Button(stock='gtk-go-down')
+        self.up = Gtk.Button(stock='Gtk-go-up')
+        self.down = Gtk.Button(stock='Gtk-go-down')
 
         self.up.connect('clicked', self.clicked)
         self.down.connect('clicked', self.clicked, True)
@@ -764,12 +764,12 @@ class UrkUITabs(Gtk.VBox):
         self.tabs = Notebook()
         self.tabs.set_property(
             "tab-pos", 
-            conf.get("ui-gtk/tab-pos", Gtk.POS_BOTTOM)
+            conf.get("ui-Gtk/tab-pos", Gtk.PositionType.BOTTOM)
             )
 
         self.tabs.set_scrollable(True)
         self.tabs.set_property("can-focus", False)
-        self.pack_end(self.tabs)
+        self.pack_end(self.tabs, False, True, 0)
     
     def __iter__(self):
         return iter(self.tabs.get_children())
