@@ -45,7 +45,7 @@ class GtkSource(object):
     def __init__(self, tag):
         self.tag = tag
     def unregister(self):
-        gobject.source_remove(self.tag)
+        GObject.source_remove(self.tag)
 
 def register_idle(f, *args, **kwargs):
     priority = kwargs.pop("priority",PRIORITY_DEFAULT_IDLE)

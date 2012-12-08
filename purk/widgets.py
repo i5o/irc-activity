@@ -304,9 +304,9 @@ class TextInput(Gtk.Entry):
 
     def keypress(self, event):
         keychar = (
-            (Gdk.CONTROL_MASK, '^'),
-            (Gdk.SHIFT_MASK, '+'),
-            (Gdk.MOD1_MASK, '!')
+            (Gdk.EventMask.CONTROL_MASK, '^'),
+            (Gdk.EventMask.SHIFT_MASK, '+'),
+            (Gdk.EventMask.MOD1_MASK, '!')
             )
 
         key = ''
@@ -585,7 +585,7 @@ class TextOutput(Gtk.TextView):
         if not buffer:
             buffer = Gtk.TextBuffer.new(tag_table)
         
-        Gtk.TextView.__init__(buffer)
+        Gtk.TextView.__init__(self)
         self.core = core
         self.events = core.events
         self.win = window
@@ -596,13 +596,13 @@ class TextOutput(Gtk.TextView):
         self.set_editable(False)
         self.set_cursor_visible(False)
 
-        self.set_property("left-margin", 3)
-        self.set_property("right-margin", 3)
-
         self.linking = set()
 
-        self.add_events(Gdk.POINTER_MOTION_HINT_MASK)
-        self.add_events(Gdk.LEAVE_NOTIFY_MASK)
+        self.add_events(Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        self.add_events(Gdk.EventMask.LEAVE_NOTIFY_MASK)
+
+        self.add_events(Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        self.add_events(Gdk.EventMask.LEAVE_NOTIFY_MASK)
 
         self.connect('populate-popup', self.popup)
         self.connect('motion-notify-event', self.hover)
