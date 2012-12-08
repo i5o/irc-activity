@@ -18,11 +18,12 @@
 import logging
 from gettext import gettext as _
 
-import gtk
+from gi.repository import Gtk
+from gi.repository import Gdk
 import simplejson
 
-from sugar.activity import activity
-from sugar import env
+from sugar3.activity import activity
+from sugar3 import env
 import purk
 import purk.conf
 import purk.windows
@@ -36,7 +37,7 @@ class IRCActivity(activity.Activity):
         logging.debug('Starting the IRC Activity')
         self.set_title(_('IRC Activity'))
 
-        self.add_events(gtk.gdk.VISIBILITY_NOTIFY_MASK)
+        self.add_events(Gdk.VISIBILITY_NOTIFY_MASK)
         self.connect('visibility-notify-event',
                      self.__visibility_notify_event_cb)
 
@@ -55,16 +56,16 @@ class IRCActivity(activity.Activity):
         OLD_TOOLBAR = False
 
         try:
-                from sugar.graphics.toolbarbox import ToolbarBox, ToolbarButton
-                from sugar.activity.widgets import ActivityToolbarButton, StopButton, \
+                from sugar3.graphics.toolbarbox import ToolbarBox, ToolbarButton
+                from sugar3.activity.widgets import ActivityToolbarButton, StopButton, \
                 ShareButton, KeepButton, TitleEntry, ActivityButton
 
         except ImportError:
                 OLD_TOOLBAR = True
 
         if OLD_TOOLBAR:
-                from sugar.activity.activity import Activity, ActivityToolbox
-                toolbox = activity.ActivityToolbox(self)
+                from sugar3.activity import widgets
+                toolbox = widgets.ActivityToolbox(self)
 
                 # Remove the Share button, since this activity isn't shareable
                 toolbar = toolbox.get_activity_toolbar()
@@ -86,7 +87,7 @@ class IRCActivity(activity.Activity):
                 toolbar_box.toolbar.insert(keep_button, -1)
                 keep_button.show()
 
-                separator = gtk.SeparatorToolItem()
+                separator = Gtk.SeparatorToolItem()
                 separator.props.draw = False
                 separator.set_expand(True)
                 toolbar_box.toolbar.insert(separator, -1)
@@ -100,7 +101,7 @@ class IRCActivity(activity.Activity):
                 toolbar_box.show()
 
     def __visibility_notify_event_cb(self, window, event):
-        self.is_visible = event.state != gtk.gdk.VISIBILITY_FULLY_OBSCURED
+        self.is_visible = event.state != Gdk.VISIBILITY_FULLY_OBSCURED
 
         #Configuracion por defecto
 

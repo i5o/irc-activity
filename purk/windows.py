@@ -1,4 +1,5 @@
-import gtk
+from gi.repository import Gtk
+from gi.repository import Gdk
 
 import irc
 from conf import conf
@@ -60,7 +61,7 @@ def get_default(network, manager):
     for window in get_with(manager, None, network):
         return window
 
-class Window(gtk.VBox):
+class Window(Gtk.VBox):
     need_vbox_init = True
 
     def transfer_text(self, _widget, event):
@@ -126,7 +127,7 @@ class Window(gtk.VBox):
 
         if self.need_vbox_init:
             #make sure we don't call this an extra time when mutating
-            gtk.VBox.__init__(self, False)
+            Gtk.VBox.__init__(self, False)
             self.need_vbox_init = False
         
         if hasattr(self, "buffer"):
@@ -161,7 +162,7 @@ class SimpleWindow(Window):
 
         self.pack_end(self.input, expand=False)
         
-        topbox = gtk.ScrolledWindow()
+        topbox = Gtk.ScrolledWindow()
         topbox.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         topbox.add(self.output)
 
@@ -188,14 +189,14 @@ class StatusWindow(Window):
         self.focus = self.input.grab_focus
         self.connect("key-press-event", self.transfer_text)
         self.manager = core.manager
-        botbox = gtk.HBox()
-        botbox.pack_start(self.input)
+        botbox = Gtk.HBox()
+        botbox.add(self.input)
         botbox.pack_end(self.nick_label, expand=False)
 
         self.pack_end(botbox, expand=False)
         
-        topbox = gtk.ScrolledWindow()
-        topbox.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        topbox = Gtk.ScrolledWindow()
+        topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         topbox.add(self.output)
 
         self.pack_end(topbox)
@@ -211,14 +212,14 @@ class QueryWindow(Window):
         self.focus = self.input.grab_focus
         self.connect("key-press-event", self.transfer_text)
 
-        botbox = gtk.HBox()
+        botbox = Gtk.HBox()
         botbox.pack_start(self.input)
         botbox.pack_end(self.nick_label, expand=False)
 
         self.pack_end(botbox, expand=False)
         
-        topbox = gtk.ScrolledWindow()
-        topbox.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        topbox = Gtk.ScrolledWindow()
+        topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         topbox.add(self.output)
 
         self.pack_end(topbox)
@@ -230,7 +231,7 @@ class QueryWindow(Window):
 
 def move_nicklist(paned, event):
     paned._moving = (
-        event.type == gtk.gdk._2BUTTON_PRESS,
+        event.type == Gdk.EventType._2BUTTON_PRESS,
         paned.get_position()
         )
         
@@ -271,23 +272,23 @@ class ChannelWindow(Window):
         self.focus = self.input.grab_focus
         self.connect("key-press-event", self.transfer_text)
         
-        topbox = gtk.ScrolledWindow()
-        topbox.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        topbox = Gtk.ScrolledWindow()
+        topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         topbox.add(self.output)
         
-        nlbox = gtk.ScrolledWindow()
-        nlbox.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)   
+        nlbox = Gtk.ScrolledWindow()
+        nlbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)   
         nlbox.add(self.nicklist)
 
         nlbox.set_size_request(conf.get("ui-gtk/nicklist-width", 112), -1)
 
-        botbox = gtk.HBox()
+        botbox = Gtk.HBox()
         botbox.pack_start(self.input)
         botbox.pack_end(self.nick_label, expand=False)
         
         self.pack_end(botbox, expand=False)
         
-        pane = gtk.HPaned()
+        pane = Gtk.HPaned()
         pane.pack1(topbox, resize=True, shrink=False)
         pane.pack2(nlbox, resize=False, shrink=True)
         
