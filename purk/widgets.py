@@ -191,6 +191,8 @@ class Nicklist(Gtk.TreeView):
 
         Gtk.TreeView.__init__(self)
 
+        self.replace(())
+
         self.set_headers_visible(False)
         self.set_property("fixed-height-mode", True)
         self.connect("button-press-event", self.click)
