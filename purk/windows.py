@@ -213,7 +213,7 @@ class QueryWindow(Window):
         self.connect("key-press-event", self.transfer_text)
 
         botbox = Gtk.HBox()
-        botbox.pack_start(self.input)
+        botbox.add(self.input)
         botbox.pack_end(self.nick_label, False, True, 0)
 
         self.pack_end(botbox, False, True, 0)
@@ -283,7 +283,7 @@ class ChannelWindow(Window):
         nlbox.set_size_request(conf.get("ui-gtk/nicklist-width", 112), -1)
 
         botbox = Gtk.HBox()
-        botbox.pack_start(self.input)
+        botbox.add(self.input)
         botbox.pack_end(self.nick_label, False, True, 0)
         
         self.pack_end(botbox, False, True, 0)

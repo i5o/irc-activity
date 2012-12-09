@@ -593,11 +593,17 @@ class TextOutput(Gtk.TextView):
         self.events = core.events
         self.win = window
         
-        self.set_size_request(0, -1)
+        self.set_size_request(0 , -1)
+
+        self.set_property("left-margin", 3)
+        self.set_property("right-margin", 3)
 
         self.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
         self.set_editable(False)
         self.set_cursor_visible(False)
+
+        self.set_left_margin(3)
+        self.set_right_margin(3)
 
         self.linking = set()
 
