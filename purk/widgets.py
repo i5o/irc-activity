@@ -588,8 +588,7 @@ class TextOutput(Gtk.TextView):
             buffer = Gtk.TextBuffer.new(tag_table)
         
         Gtk.TextView.__init__(self)
-        self.buffer = self.get_buffer()
-        self.buffer = buffer
+        self.set_buffer(buffer)
         self.core = core
         self.events = core.events
         self.win = window
