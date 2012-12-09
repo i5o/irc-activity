@@ -454,12 +454,6 @@ class TextOutput(Gtk.TextView):
         
         cc = buffer.get_char_count()
 
-#        buffer.insert_with_tags_by_name(
-#            buffer.get_end_iter(),
-#            text + line_ending,
-#            'indent'
-#            )
-
         for tag in tags:
             tag_name = str(tag['data'])
    
@@ -471,7 +465,13 @@ class TextOutput(Gtk.TextView):
                 buffer.get_iter_at_offset(tag['from'] + cc),
                 buffer.get_iter_at_offset(tag['to'] + cc)
                 )
-    
+       
+        buffer.insert_with_tags(
+            buffer.get_end_iter(),
+            text + line_ending,
+            indent_tag
+            )    
+
     def popup(self, menu):
         hover_iter = get_iter_at_coords(self, *self.hover_coords)
 
@@ -595,7 +595,7 @@ class TextOutput(Gtk.TextView):
         self.win = window
         
         self.set_size_request(0, -1)
-        
+
         self.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
         self.set_editable(False)
         self.set_cursor_visible(False)
