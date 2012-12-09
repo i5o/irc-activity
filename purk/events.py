@@ -31,7 +31,7 @@ def trigger(e_name, e_data=None, **kwargs):
     if e_data is None:
         e_data = data(**kwargs)
     
-    #print 'Event:', e_name, e_data
+    print 'Event:', e_name, e_data
     
     failure = True
     error = None

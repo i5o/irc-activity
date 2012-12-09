@@ -45,7 +45,7 @@ def set_style(widget_name, style):
         # FIXME: find a better way...
         dummy = Gtk.Label()
         dummy.set_style(None)
-    
+
         def apply_style_fg(value):
             dummy.modify_text(Gtk.StateType.NORMAL, Gdk.color.parse(value))
 
@@ -236,7 +236,7 @@ class NickEditor(Gtk.EventBox):
 
             self.remove(self.label)
             self.add(entry)
-            self.window.set_cursor(None)
+            self.get_window().set_cursor(None)
                 
             entry.show()
             entry.grab_focus()
@@ -245,7 +245,7 @@ class NickEditor(Gtk.EventBox):
         self.remove(widget)
         self.add(self.label)
         self.win.input.grab_focus()
-        self.window.set_cursor(Gdk.Cursor(Gdk.XTERM))
+        self.window.set_cursor(Gdk.Cursor(Gdk.CursorType.XTERM))
 
     def __init__(self, window, core):
         Gtk.EventBox.__init__(self)
@@ -262,7 +262,7 @@ class NickEditor(Gtk.EventBox):
 
         self.connect(
             "realize", 
-            lambda *a: self.window.set_cursor(Gtk.gdk.Cursor(Gdk.XTERM))
+            lambda *a: self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.XTERM))
             )
 
 # The entry which you type in to send messages        
@@ -304,9 +304,9 @@ class TextInput(Gtk.Entry):
 
     def keypress(self, event):
         keychar = (
-            (Gdk.EventMask.CONTROL_MASK, '^'),
-            (Gdk.EventMask.SHIFT_MASK, '+'),
-            (Gdk.EventMask.MOD1_MASK, '!')
+            (Gdk.ModifierType.CONTROL_MASK, '^'),
+            (Gdk.ModifierType.SHIFT_MASK, '+'),
+            (Gdk.ModifierType.MOD1_MASK, '!')
             )
 
         key = ''
@@ -362,7 +362,7 @@ def word_from_pos(text, pos):
  
 def get_iter_at_coords(view, x, y):
     return view.get_iter_at_location(
-        *view.window_to_buffer_coords(Gtk.TEXT_WINDOW_TEXT, int(x), int(y))
+        *view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, int(x), int(y))
         )
 
 def get_event_at_iter(view, iter, core):
@@ -456,11 +456,11 @@ class TextOutput(Gtk.TextView):
         
         cc = buffer.get_char_count()
 
-        buffer.insert_with_tags_by_name(
-            buffer.get_end_iter(),
-            text + line_ending,
-            'indent'
-            )
+#        buffer.insert_with_tags_by_name(
+#            buffer.get_end_iter(),
+#            text + line_ending,
+#            'indent'
+#            )
 
         for tag in tags:
             tag_name = str(tag['data'])
@@ -474,9 +474,9 @@ class TextOutput(Gtk.TextView):
                 buffer.get_iter_at_offset(tag['to'] + cc)
                 )
     
-    def popup(self, menu):    
+    def popup(self, menu):
         hover_iter = get_iter_at_coords(self, *self.hover_coords)
-       
+
         menuitems = []
         if not hover_iter.ends_line():
             c_data = get_event_at_iter(self, hover_iter)
@@ -500,14 +500,15 @@ class TextOutput(Gtk.TextView):
             
         menu.show_all()
     
-    def mousedown(self, event):
+    def mousedown(self, widget, event):
         if event.button == 3:
-            self.hover_coords = event.get_coords()
+            self.hover_coords = widget.get_coords()
     
-    def mouseup(self, event):
+    def mouseup(self, widget, event):
+        print widget, event
         if not self.get_buffer().get_selection_bounds():
-            if event.button == 1:
-                hover_iter = get_iter_at_coords(self, event.x, event.y)
+            if widget.button == 1:
+                hover_iter = get_iter_at_coords(self, *self.hover_coords)
             
                 if not hover_iter.ends_line():
                     c_data = get_event_at_iter(self, hover_iter, self.core)
@@ -517,7 +518,7 @@ class TextOutput(Gtk.TextView):
             if self.is_focus():
                 self.win.focus()
 
-    def clear_hover(self, _event=None):
+    def clear_hover(self, _widget=None, event=None):
         buffer = self.get_buffer()
     
         for fr, to in self.linking:
@@ -528,13 +529,13 @@ class TextOutput(Gtk.TextView):
                 )
         
         self.linking = set()
-        self.get_window(Gtk.TEXT_WINDOW_TEXT).set_cursor(None)
+        self.get_window(Gtk.TextWindowType.TEXT).set_cursor(None)
 
-    def hover(self, event):
+    def hover(self, widget, event):
         if self.linking:
             self.clear_hover()
 
-        hover_iter = get_iter_at_coords(self, event.x, event.y)
+        hover_iter = get_iter_at_coords(self, *self.hover_coords)
 
         if not hover_iter.ends_line():        
             h_data = get_event_at_iter(self, hover_iter, self.core)
@@ -561,23 +562,26 @@ class TextOutput(Gtk.TextView):
                         )
                         
                     self.get_window(
-                        Gtk.TEXT_WINDOW_TEXT
+                        Gtk.TextWindowType.TEXT
                         ).set_cursor(Gdk.Cursor(Gdk.HAND2))
         
         self.get_pointer()
 
-    def scroll(self, _allocation=None):
+    def scroll(self, widget, cairo_rect, _allocation=None):
         if self.autoscroll:
             def do_scroll():
-                self.scroller.value = self.scroller.upper - self.scroller.page_size
+                self.scroller.set_value(self.scroller.get_upper() - \
+                                        self.scroller.get_page_size())
                 self._scrolling = False
-            
+
             if not self._scrolling:
                 self._scrolling = GObject.idle_add(do_scroll)
     
     def check_autoscroll(self, *args):
         def set_to_scroll():
-            self.autoscroll = self.scroller.value + self.scroller.page_size >= self.scroller.upper
+            self.autoscroll = self.scroller.get_value() +      \
+                              self.scroller.get_page_size() >= \
+                              self.scroller.get_upper()
             
         GObject.idle_add(set_to_scroll)
 
@@ -633,7 +637,7 @@ class TextOutput(Gtk.TextView):
         self.connect("size-allocate", self.scroll)
 
         def set_cursor(widget):
-            self.get_window(Gtk.TEXT_WINDOW_TEXT).set_cursor(None)      
+            self.get_window(Gtk.TextWindowType.TEXT).set_cursor(None)      
 
         self.connect("realize", set_cursor)
         
@@ -667,7 +671,7 @@ class WindowLabel(Gtk.EventBox):
             for item in menu_from_list(c_data.menu):
                 menu.append(item)
             menu.show_all()
-            menu.popup(None, None, None, event.button, event.time)
+            menu.popup(None, None, None, event.button, event.time, None)
 
     def __init__(self, window, core):
         Gtk.EventBox.__init__(self)

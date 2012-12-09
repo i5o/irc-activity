@@ -100,7 +100,7 @@ class IRCActivity(activity.Activity):
                 toolbar_box.show()
 
     def __visibility_notify_event_cb(self, window, event):
-        self.is_visible = event.state != Gdk.VISIBILITY_FULLY_OBSCURED
+        self.is_visible = event.state != Gdk.VisibilityState.FULLY_OBSCURED
 
         #Configuracion por defecto
 
