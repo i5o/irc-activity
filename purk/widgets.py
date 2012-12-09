@@ -190,8 +190,6 @@ class Nicklist(Gtk.TreeView):
         self.events = core.events
 
         Gtk.TreeView.__init__(self)
-        
-        self.replace(())
 
         self.set_headers_visible(False)
         self.set_property("fixed-height-mode", True)
@@ -245,7 +243,7 @@ class NickEditor(Gtk.EventBox):
         self.remove(widget)
         self.add(self.label)
         self.win.input.grab_focus()
-        self.window.set_cursor(Gdk.Cursor(Gdk.CursorType.XTERM))
+        self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.XTERM))
 
     def __init__(self, window, core):
         Gtk.EventBox.__init__(self)
@@ -343,7 +341,7 @@ GObject.type_register(TextInput)
 
 def prop_to_Gtk(textview, (prop, val)):
     if val == parse_mirc.BOLD:
-        val = Pango.WEIGHT_BOLD
+        val = Pango.Weight.BOLD
 
     elif val == parse_mirc.UNDERLINE:
         val = Pango.Underline.SINGLE
