@@ -65,13 +65,12 @@ class IRCActivity(activity.Activity):
 
         if OLD_TOOLBAR:
                 from sugar3.activity import widgets
-                toolbox = widgets.ActivityToolbox(self)
+                toolbar = widgets.ActivityToolbar(self)
 
                 # Remove the Share button, since this activity isn't shareable
-                toolbar = toolbox.get_activity_toolbar()
                 toolbar.remove(toolbar.share)
 
-                self.set_toolbox(toolbox)
+                self.set_toolbar_box(toolbar)
                 self.show_all()
         else:
                 toolbar_box = ToolbarBox()

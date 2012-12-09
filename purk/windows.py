@@ -160,13 +160,13 @@ class SimpleWindow(Window):
         self.focus = self.input.grab_focus
         self.connect("key-press-event", self.transfer_text)
 
-        self.pack_end(self.input, expand=False)
-        
+        self.pack_end(self.input, False, True, 0)
+
         topbox = Gtk.ScrolledWindow()
         topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         topbox.add(self.output)
 
-        self.pack_end(topbox)
+        self.pack_end(topbox, False, True, 0)
 
         self.show_all()
 
@@ -191,15 +191,15 @@ class StatusWindow(Window):
         self.manager = core.manager
         botbox = Gtk.HBox()
         botbox.add(self.input)
-        botbox.pack_end(self.nick_label, expand=False)
+        botbox.pack_end(self.nick_label, False, True, 0)
 
-        self.pack_end(botbox, expand=False)
+        self.pack_end(botbox, False, True, 0)
         
         topbox = Gtk.ScrolledWindow()
         topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         topbox.add(self.output)
 
-        self.pack_end(topbox)
+        self.pack_end(topbox, False, True, 0)
 
         self.show_all()
 
@@ -214,9 +214,9 @@ class QueryWindow(Window):
 
         botbox = Gtk.HBox()
         botbox.pack_start(self.input)
-        botbox.pack_end(self.nick_label, expand=False)
+        botbox.pack_end(self.nick_label, False, True, 0)
 
-        self.pack_end(botbox, expand=False)
+        self.pack_end(botbox, False, True, 0)
         
         topbox = Gtk.ScrolledWindow()
         topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -284,9 +284,9 @@ class ChannelWindow(Window):
 
         botbox = Gtk.HBox()
         botbox.pack_start(self.input)
-        botbox.pack_end(self.nick_label, expand=False)
+        botbox.pack_end(self.nick_label, False, True, 0)
         
-        self.pack_end(botbox, expand=False)
+        self.pack_end(botbox, False, True, 0)
         
         pane = Gtk.HPaned()
         pane.pack1(topbox, resize=True, shrink=False)
@@ -297,7 +297,7 @@ class ChannelWindow(Window):
         pane.connect("button-press-event", move_nicklist)
         pane.connect("button-release-event", drop_nicklist)
         
-        self.pack_end(pane)
+        self.pack_end(pane, False, True, 0)
         self.show_all()
 
     def is_channel(self):

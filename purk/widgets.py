@@ -586,6 +586,8 @@ class TextOutput(Gtk.TextView):
             buffer = Gtk.TextBuffer.new(tag_table)
         
         Gtk.TextView.__init__(self)
+        self.buffer = self.get_buffer()
+        self.buffer = buffer
         self.core = core
         self.events = core.events
         self.win = window
@@ -625,8 +627,9 @@ class TextOutput(Gtk.TextView):
                     self.autoscroll = adj.value + adj.page_size >= adj.upper
     
                 vadj.connect("value-changed", set_scroll)
-
-        self.connect("set-scroll-adjustments", setup_scroll)
+        # FIXME: set-scroll adjustment is no longer emitted.
+        # Check http://developer.gnome.org/gtk3/3.3/ch25s02.html
+        #self.connect("set-scroll-adjustments", setup_scroll)
         self.connect("size-allocate", self.scroll)
 
         def set_cursor(widget):
