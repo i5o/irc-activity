@@ -135,7 +135,7 @@ class Window(Gtk.VBox):
         else:
             self.output = widgets.TextOutput(core, self)
             self.buffer = self.output.get_buffer()
-            
+
         if hasattr(self, "input"):
             if self.input.parent:
                 self.input.parent.remove(self.input)
@@ -160,13 +160,13 @@ class SimpleWindow(Window):
         self.focus = self.input.grab_focus
         self.connect("key-press-event", self.transfer_text)
 
-        self.pack_end(self.input, True, False, 0)
-
+        self.pack_end(self.input, expand=False)
+        
         topbox = Gtk.ScrolledWindow()
-        topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
         topbox.add(self.output)
 
-        self.pack_end(topbox, True, False, 0)
+        self.pack_end(topbox)
 
         self.show_all()
 
@@ -196,10 +196,10 @@ class StatusWindow(Window):
         self.pack_end(botbox, False, True, 0)
         
         topbox = Gtk.ScrolledWindow()
-        topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        topbox.set_vexpand(True)
         topbox.add(self.output)
 
-        self.pack_end(topbox, False, True, 0)
+        self.pack_end(topbox, True, True, 0)
 
         self.show_all()
 
@@ -236,7 +236,7 @@ def move_nicklist(paned, event):
         )
         
 def drop_nicklist(paned, event):
-    width = paned.allocation.width
+    width = paned.get_allocated_width()
     pos = paned.get_position()
     
     double_click, nicklist_pos = paned._moving
@@ -280,12 +280,10 @@ class ChannelWindow(Window):
         nlbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)   
         nlbox.add(self.nicklist)
 
-        nlbox.set_size_request(conf.get("ui-gtk/nicklist-width", 112), -1)
-
         botbox = Gtk.HBox()
         botbox.add(self.input)
         botbox.pack_end(self.nick_label, False, True, 0)
-        
+
         self.pack_end(botbox, False, True, 0)
         
         pane = Gtk.HPaned()
@@ -297,7 +295,7 @@ class ChannelWindow(Window):
         pane.connect("button-press-event", move_nicklist)
         pane.connect("button-release-event", drop_nicklist)
         
-        self.pack_end(pane, False, True, 0)
+        self.pack_end(pane, True, True, 0)
         self.show_all()
 
     def is_channel(self):

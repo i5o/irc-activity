@@ -110,7 +110,7 @@ def menu_from_list(alist):
         last = item
 
 class Nicklist(Gtk.TreeView):
-    def click(self, event):
+    def click(self, widget, event):
         if event.button == 3:
             x, y = event.get_coords()
     
@@ -119,7 +119,7 @@ class Nicklist(Gtk.TreeView):
             c_data = self.events.data(window=self.win, data=self[data], menu=[])
         
             self.events.trigger("ListRightClick", c_data)
-            
+
             if c_data.menu:
                 menu = Gtk.Menu()
                 for item in menu_from_list(c_data.menu):
@@ -180,7 +180,7 @@ class Nicklist(Gtk.TreeView):
     
     def clear(self):
         self.get_model().clear()
-        
+
     def __iter__(self):
         return (r[0] for r in self.get_model())
 
@@ -193,7 +193,7 @@ class Nicklist(Gtk.TreeView):
 
         self.set_headers_visible(False)
         self.set_property("fixed-height-mode", True)
-        self.connect("button-press-event", Nicklist.click)
+        self.connect("button-press-event", self.click)
         self.connect_after("button-release-event", lambda *a: True)
         
         style_me(self, "nicklist")
@@ -503,9 +503,8 @@ class TextOutput(Gtk.TextView):
             self.hover_coords = widget.get_coords()
     
     def mouseup(self, widget, event):
-        print widget, event
         if not self.get_buffer().get_selection_bounds():
-            if widget.button == 1:
+            if event.button == 1:
                 hover_iter = get_iter_at_coords(self, *self.hover_coords)
             
                 if not hover_iter.ends_line():
@@ -592,11 +591,6 @@ class TextOutput(Gtk.TextView):
         self.core = core
         self.events = core.events
         self.win = window
-        
-        self.set_size_request(0 , -1)
-
-        self.set_property("left-margin", 3)
-        self.set_property("right-margin", 3)
 
         self.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
         self.set_editable(False)
