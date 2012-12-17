@@ -160,13 +160,13 @@ class SimpleWindow(Window):
         self.focus = self.input.grab_focus
         self.connect("key-press-event", self.transfer_text)
 
-        self.pack_end(self.input, expand=False)
+        self.pack_end(self.input, False, True, 0)
         
         topbox = Gtk.ScrolledWindow()
         topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
         topbox.add(self.output)
 
-        self.pack_end(topbox)
+        self.pack_end(topbox, True, True, 0)
 
         self.show_all()
 
@@ -222,7 +222,7 @@ class QueryWindow(Window):
         topbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         topbox.add(self.output)
 
-        self.pack_end(topbox)
+        self.pack_end(topbox, True, True, 0)
 
         self.show_all()
 

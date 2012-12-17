@@ -157,18 +157,19 @@ class Nicklist(Gtk.TreeView):
  
     def insert(self, pos, realname, markedupname, sortkey):
         self.get_model().insert(pos, (realname, markedupname, sortkey))
-        
+
     def replace(self, names):
         self.set_model(Gtk.ListStore(str, str, str))
-        
-        self.insert_column_with_attributes(
-            0, '', Gtk.CellRendererText(), markup=1
-            ).set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+
+        column = Gtk.TreeViewColumn('', Gtk.CellRendererText(), text=1)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        column.set_min_width(80)
+        self.append_column(column)
 
         for name in names:
             self.append(*name)
         
-        self.get_model().set_sort_column_id(2, Gtk.GTK_SORT_ASCENDING)
+        self.get_model().set_sort_column_id(2, Gtk.SortType.ASCENDING)
 
     def remove(self, realname):
         index = self.index(realname)
@@ -197,7 +198,7 @@ class Nicklist(Gtk.TreeView):
         self.set_property("fixed-height-mode", True)
         self.connect("button-press-event", self.click)
         self.connect_after("button-release-event", lambda *a: True)
-        
+
         style_me(self, "nicklist")
 
 # Label used to display/edit your current nick on a network
