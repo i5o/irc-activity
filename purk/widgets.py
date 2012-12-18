@@ -474,7 +474,7 @@ class TextOutput(Gtk.TextView):
             indent_tag
             )    
 
-    def popup(self, menu):
+    def popup(self, menu, event):
         hover_iter = get_iter_at_coords(self, *self.hover_coords)
 
         menuitems = []
@@ -502,7 +502,7 @@ class TextOutput(Gtk.TextView):
     
     def mousedown(self, widget, event):
         if event.button == 3:
-            self.hover_coords = widget.get_coords()
+            self.hover_coords = event.get_coords()
     
     def mouseup(self, widget, event):
         if not self.get_buffer().get_selection_bounds():
