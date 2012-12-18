@@ -162,8 +162,7 @@ class Nicklist(Gtk.TreeView):
         self.set_model(Gtk.ListStore(str, str, str))
 
         column = Gtk.TreeViewColumn('', Gtk.CellRendererText(), text=1)
-        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        column.set_min_width(80)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         self.append_column(column)
 
         for name in names:
@@ -752,11 +751,11 @@ class FindBox(Gtk.HBox):
         self.textbox.connect('focus-out-event', self.remove)
         self.textbox.connect('activate', self.clicked)
                 
-        self.pack_start(Gtk.Label('Find:'), expand=False)
-        self.pack_start(self.textbox)
+        self.pack_start(Gtk.Label('Find:'), False, True, 0)
+        self.pack_start(self.textbox, True, True, 0)
 
-        self.pack_start(self.up, expand=False)
-        self.pack_start(self.down, expand=False)
+        self.pack_start(self.up, False, True, 0)
+        self.pack_start(self.down, False, True, 0)
 
         self.show_all()
 

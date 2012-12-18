@@ -277,6 +277,7 @@ class ChannelWindow(Window):
         topbox.add(self.output)
         
         nlbox = Gtk.ScrolledWindow()
+	    nlbox.set_size_request(conf.get("ui-gtk/nicklist-width", 112), -1)
         nlbox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)   
         nlbox.add(self.nicklist)
 
