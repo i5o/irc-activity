@@ -23,7 +23,8 @@ from gi.repository import Gdk
 import json
 
 from sugar3.activity import activity
-from sugar3 import env
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.activity.widgets import StopButton, TitleEntry, ActivityButton
 import purk
 import purk.conf
 import purk.windows
@@ -52,10 +53,6 @@ class IRCActivity(activity.Activity):
         # CANVAS
         self.set_canvas(widget)
 
-        # TOOLBAR
-        from sugar3.graphics.toolbarbox import ToolbarBox, ToolbarButton
-        from sugar3.activity.widgets import ActivityToolbarButton, StopButton, ShareButton, TitleEntry, ActivityButton
-
         toolbar_box = ToolbarBox()
         self.activity_button = ActivityButton(self)
         toolbar_box.toolbar.insert(self.activity_button, 0)
@@ -81,7 +78,7 @@ class IRCActivity(activity.Activity):
     def __visibility_notify_event_cb(self, window, event):
         self.is_visible = event.state != Gdk.VisibilityState.FULLY_OBSCURED
 
-        #Configuracion por defecto
+        # Configuracion por defecto
 
     def default_config(self):
         self.client.join_server('us.freenode.net')
@@ -138,7 +135,11 @@ class IRCActivity(activity.Activity):
             if win.is_channel():
                 data['channels'].append(win.id)
             buf = win.output.get_buffer()
-            data['scrollback'][win.id] = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), True)
+            data['scrollback'][
+                win.id] = buf.get_text(
+                buf.get_start_iter(),
+                buf.get_end_iter(),
+                True)
 
         fd = open(file_path, 'w')
         text = json.dumps(data)
