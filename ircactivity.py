@@ -20,7 +20,7 @@ from gettext import gettext as _
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-import simplejson
+import json
 
 from sugar3.activity import activity
 from sugar3 import env
@@ -94,7 +94,7 @@ class IRCActivity(activity.Activity):
 
         fd = open(file_path, 'r')
         text = fd.read()
-        data = simplejson.loads(text)
+        data = json.loads(text)
         fd.close()
 
         self.client.run_command('NICK %s' % (data['nick']))
@@ -141,6 +141,6 @@ class IRCActivity(activity.Activity):
             data['scrollback'][win.id] = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), True)
 
         fd = open(file_path, 'w')
-        text = simplejson.dumps(data)
+        text = json.dumps(data)
         fd.write(text)
         fd.close()
